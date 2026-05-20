@@ -18,4 +18,9 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     {
         return await _context.Users.ToListAsync();
     }
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    }
 }
