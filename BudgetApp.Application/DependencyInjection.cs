@@ -21,6 +21,6 @@ public static class DependencyInjection
         // Registrerar alla FluentValidation validators i Application-lagret
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
-        return services;
+         return services;
     }
 }
