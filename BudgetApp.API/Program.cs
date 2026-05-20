@@ -1,5 +1,6 @@
 using BudgetApp.Infrastructure;
 using BudgetApp.Application;
+using FluentValidation;
 
 namespace BudgetApp.API
 {
@@ -9,10 +10,7 @@ namespace BudgetApp.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddInfrastructure(builder.Configuration);
@@ -34,7 +32,22 @@ namespace BudgetApp.API
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Global middleware för ValidationException från FluentValidation
+            app.Use(async (context, next) =>
+            {
+                try
+                {
+                    await next();
+                }
+                catch (ValidationException ex)
+                {
+                    context.Response.StatusCode = 400;
+                    context.Response.ContentType = "application/json";
+                    var errors = ex.Errors.Select(e => e.ErrorMessage).ToList();
+                    await context.Response.WriteAsJsonAsync(errors);
+                }
+            });
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -42,13 +55,9 @@ namespace BudgetApp.API
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.UseCors("AllowFrontend");
-
             app.MapControllers();
-
             app.Run();
         }
     }
