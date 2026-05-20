@@ -1,21 +1,23 @@
-﻿using BudgetApp.Application.Features.Categories.Commands;
+using AutoMapper;
+using BudgetApp.Application.Features.Categories.Commands;
 using BudgetApp.Application.Features.Categories.Queries;
+using BudgetApp.Application.Mappings;
 using BudgetApp.Domain.Entities;
 using BudgetApp.Infrastructure.Database;
 using BudgetApp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace BudgetApp.Tests;
 
-// Enhetstester för Category CRUD handlers i Application-lagret
 [TestFixture]
 public class CategoryHandlerTests
 {
     private AppDbContext _context;
     private CategoryRepository _categoryRepository;
+    private IMapper _mapper;
 
-    // Sätter upp en ny in-memory databas innan varje test
     [SetUp]
     public void Setup()
     {
@@ -25,20 +27,23 @@ public class CategoryHandlerTests
 
         _context = new AppDbContext(options);
         _categoryRepository = new CategoryRepository(_context);
+
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+        _mapper = services.BuildServiceProvider().GetRequiredService<IMapper>();
     }
 
-    // Rensar upp efter varje test
     [TearDown]
     public void TearDown()
     {
         _context.Dispose();
     }
 
-    // Testar att CreateCategoryCommandHandler skapar en kategori korrekt
     [Test]
     public async Task CreateCategory_ShouldReturnCategoryDto_WithCorrectValues()
     {
-        var handler = new CreateCategoryCommandHandler(_categoryRepository);
+        var handler = new CreateCategoryCommandHandler(_categoryRepository, _mapper);
         var command = new CreateCategoryCommand
         {
             BudgetId = Guid.NewGuid(),
@@ -56,20 +61,18 @@ public class CategoryHandlerTests
         Assert.That(result.CurrentBalance, Is.EqualTo(3000));
     }
 
-    // Testar att GetCategoriesQueryHandler returnerar alla kategorier för en budget
     [Test]
     public async Task GetCategories_ShouldReturnAllCategoriesForBudget()
     {
         var budgetId = Guid.NewGuid();
 
-        // Lägger till två kategorier i databasen
         _context.Categories.AddRange(
             new Category { Id = Guid.NewGuid(), BudgetId = budgetId, Name = "Mat", AllocatedAmount = 3000, CurrentBalance = 3000, CreatedAt = DateTime.UtcNow },
             new Category { Id = Guid.NewGuid(), BudgetId = budgetId, Name = "Hyra", AllocatedAmount = 6500, CurrentBalance = 6500, CreatedAt = DateTime.UtcNow }
         );
         await _context.SaveChangesAsync();
 
-        var handler = new GetCategoriesQueryHandler(_categoryRepository);
+        var handler = new GetCategoriesQueryHandler(_categoryRepository, _mapper);
         var query = new GetCategoriesQuery { BudgetId = budgetId };
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -79,7 +82,6 @@ public class CategoryHandlerTests
         Assert.That(result[1].Name, Is.EqualTo("Hyra"));
     }
 
-    // Testar att GetCategoryByIdQueryHandler returnerar rätt kategori
     [Test]
     public async Task GetCategoryById_ShouldReturnCorrectCategory()
     {
@@ -95,7 +97,7 @@ public class CategoryHandlerTests
         });
         await _context.SaveChangesAsync();
 
-        var handler = new GetCategoryByIdQueryHandler(_categoryRepository);
+        var handler = new GetCategoryByIdQueryHandler(_categoryRepository, _mapper);
         var query = new GetCategoryByIdQuery { Id = categoryId };
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -105,7 +107,6 @@ public class CategoryHandlerTests
         Assert.That(result.Name, Is.EqualTo("Mat"));
     }
 
-    // Testar att UpdateCategoryCommandHandler uppdaterar en kategori korrekt
     [Test]
     public async Task UpdateCategory_ShouldReturnUpdatedCategoryDto()
     {
@@ -121,7 +122,7 @@ public class CategoryHandlerTests
         });
         await _context.SaveChangesAsync();
 
-        var handler = new UpdateCategoryCommandHandler(_categoryRepository);
+        var handler = new UpdateCategoryCommandHandler(_categoryRepository, _mapper);
         var command = new UpdateCategoryCommand
         {
             Id = categoryId,
@@ -140,7 +141,6 @@ public class CategoryHandlerTests
         Assert.That(result.WeeklyAmount, Is.EqualTo(1000));
     }
 
-    // Testar att DeleteCategoryCommandHandler tar bort en kategori korrekt
     [Test]
     public async Task DeleteCategory_ShouldReturnTrue_WhenCategoryExists()
     {
@@ -164,7 +164,6 @@ public class CategoryHandlerTests
         Assert.That(result, Is.True);
     }
 
-    // Testar att DeleteCategoryCommandHandler returnerar false om kategorin inte finns
     [Test]
     public async Task DeleteCategory_ShouldReturnFalse_WhenCategoryDoesNotExist()
     {

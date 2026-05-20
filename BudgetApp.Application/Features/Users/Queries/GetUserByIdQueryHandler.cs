@@ -1,36 +1,28 @@
-﻿using BudgetApp.Application.Features.Users.DTOs;
+using AutoMapper;
+using BudgetApp.Application.Features.Users.DTOs;
 using BudgetApp.Application.Interfaces;
 using MediatR;
 
 namespace BudgetApp.Application.Features.Users.Queries;
 
-// Hanterar GetUserByIdQuery — hämtar en specifik användare från databasen
 public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDto?>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public GetUserByIdQueryHandler(IUserRepository userRepository)
+    public GetUserByIdQueryHandler(IUserRepository userRepository, IMapper mapper)
     {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
-
 
     public async Task<UserDto?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        // Hämtar användaren från databasen via repository
         var user = await _userRepository.GetByIdAsync(request.Id);
 
-        // Returnerar null om användaren inte hittas
         if (user == null)
             return null;
 
-        // Returnerar en DTO med användardata — aldrig PasswordHash
-        return new UserDto
-        {
-            Id = user.Id,
-            Email = user.Email,
-            Role = user.Role,
-            CreatedAt = user.CreatedAt
-        };
+        return _mapper.Map<UserDto>(user);
     }
 }

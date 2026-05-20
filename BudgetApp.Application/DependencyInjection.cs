@@ -1,4 +1,6 @@
-﻿using BudgetApp.Application.Behaviours;
+using BudgetApp.Application.Behaviours;
+using AutoMapper;
+using BudgetApp.Application.Mappings;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,9 @@ public static class DependencyInjection
         // Registrerar alla FluentValidation validators i Application-lagret
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
-         return services;
+        // Registrerar AutoMapper med MappingProfile
+        services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+
+        return services;
     }
 }
