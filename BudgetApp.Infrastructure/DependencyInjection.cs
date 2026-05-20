@@ -14,9 +14,9 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        //Konfiguerar EF Core med SQL Server och connection string från appsettings.sjon
+        //Konfiguerar EF Core med PostgreSQL och connection string från appsettings.json
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(
+            options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection")));
 
         //Registrerar repositories - kopplar interface till implementationen. 
