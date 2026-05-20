@@ -32,7 +32,7 @@ namespace BudgetApp.API
 
             var app = builder.Build();
 
-            // Global middleware för ValidationException från FluentValidation
+            // Global middleware fï¿½r ValidationException frï¿½n FluentValidation
             app.Use(async (context, next) =>
             {
                 try
@@ -55,8 +55,8 @@ namespace BudgetApp.API
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthorization();
             app.UseCors("AllowFrontend");
+            app.UseAuthorization();
             app.MapControllers();
             app.Run();
         }
