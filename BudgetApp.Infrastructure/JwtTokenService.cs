@@ -31,4 +31,25 @@ public class JwtTokenService : IJwtTokenService
         // Skapar claims — data om användaren som lagras i token
         var claims = new[]
         {
-            new Claim(Clai
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role)
+        };
+
+        // Skapar signeringsnyckeln från hemlig nyckel
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        // Skapar JWT-token med claims, utgångstid och signaturnyckel
+        var token = new JwtSecurityToken(
+            issuer: issuer,
+            audience: audience,
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(expiresInMinutes),
+            signingCredentials: credentials
+        );
+
+        // Returnerar token som sträng
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+}
