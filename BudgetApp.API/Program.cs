@@ -1,6 +1,10 @@
-using BudgetApp.Infrastructure;
 using BudgetApp.Application;
+using BudgetApp.Infrastructure;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 namespace BudgetApp.API
 {
@@ -15,6 +19,23 @@ namespace BudgetApp.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication();
+
+            var jwtSecret = builder.Configuration["Jwt:Secret"]!;
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(jwtSecret))
+                    };
+                });
 
             // CORS
             builder.Services.AddCors(options =>
@@ -56,6 +77,7 @@ namespace BudgetApp.API
 
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
