@@ -8,6 +8,9 @@ public interface IBudgetRepository
     // Hämtar alla budgetar för en specifik användare
     Task<List<Budget>> GetAllAsync(Guid userId);
 
+    // Hämtar ALLA budgetar — används bara av Admin
+    Task<List<Budget>> GetAllAsync();
+
     // Hämtar en specifik budget baserat på Id
     Task<Budget?> GetByIdAsync(Guid id);
 
