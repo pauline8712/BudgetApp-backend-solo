@@ -1,8 +1,8 @@
 ﻿using BudgetApp.Application.Features.Budgets.Commands;
 using BudgetApp.Application.Features.Budgets.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BudgetApp.API.Controllers;
 
