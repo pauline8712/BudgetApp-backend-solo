@@ -9,24 +9,24 @@ namespace BudgetApp.Infrastructure;
 
 public static class DependencyInjection
 {
-    //Registrerar alla Infrastructure-tjänster - anropas från program.cs
+    // Registrerar alla Infrastructure-tjänster - anropas från Program.cs
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        //Konfiguerar EF Core med PostgreSQL och connection string från appsettings.json
+        // Konfigurerar EF Core med PostgreSQL och connection string från appsettings.json
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection")));
 
-        //Registrerar repositories - kopplar interface till implementationen. 
+        // Registrerar repositories — kopplar interface till implementationen
         services.AddScoped<ICategoryRepository, CategoryRepository>();
-
         services.AddScoped<IUserRepository, UserRepository>();
-
         services.AddScoped<IBudgetRepository, BudgetRepository>();
-
         services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+        // Registrerar JwtTokenService — skapar JWT-tokens vid inloggning och registrering
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }
