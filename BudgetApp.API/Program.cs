@@ -52,6 +52,8 @@ namespace BudgetApp.API
             });
 
             var app = builder.Build();
+            // Kör data seeding vid uppstart — skapar Admin-användare om den inte finns
+            await DbInitializer.SeedAsync(app.Services);
 
             // Global middleware f�r ValidationException fr�n FluentValidation
             app.Use(async (context, next) =>
