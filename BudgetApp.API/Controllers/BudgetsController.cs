@@ -1,10 +1,12 @@
 ﻿using BudgetApp.Application.Features.Budgets.Commands;
 using BudgetApp.Application.Features.Budgets.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetApp.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/budgets")]
 public class BudgetsController : ControllerBase

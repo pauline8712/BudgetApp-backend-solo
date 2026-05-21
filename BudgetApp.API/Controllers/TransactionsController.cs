@@ -1,10 +1,12 @@
 ﻿using BudgetApp.Application.Features.Transactions.Commands;
 using BudgetApp.Application.Features.Transactions.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetApp.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/transactions")]
 public class TransactionsController : ControllerBase
