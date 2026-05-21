@@ -10,7 +10,7 @@ namespace BudgetApp.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +52,8 @@ namespace BudgetApp.API
             });
 
             var app = builder.Build();
+            // Kör data seeding vid uppstart — skapar Admin-användare om den inte finns
+            await DbInitializer.SeedAsync(app.Services);
 
             // Global middleware f�r ValidationException fr�n FluentValidation
             app.Use(async (context, next) =>
