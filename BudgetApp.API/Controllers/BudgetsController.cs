@@ -122,4 +122,21 @@ public class BudgetsController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+
+    // Hämtar ALLA budgetar — endast tillgänglig för Admin
+    // Returnerar 403 Forbidden om användaren inte är Admin
+    [Authorize(Roles = "Admin")]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllAdmin()
+    {
+        try
+        {
+            var result = await _mediator.Send(new GetAllBudgetsAdminQuery());
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
 }
