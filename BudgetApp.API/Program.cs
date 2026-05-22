@@ -37,15 +37,12 @@ namespace BudgetApp.API
                     };
                 });
 
-            // CORS
+            // CORS — tillåter lokalt och Netlify-frontend
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    policy.WithOrigins(
-                        "http://localhost:5173",
-                        "http://localhost:5174"
-                    )
+                    policy.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
@@ -77,7 +74,7 @@ namespace BudgetApp.API
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection(); // Inaktiverat — Railway hanterar HTTPS via proxy
             app.UseCors("AllowFrontend");
             app.UseAuthentication();
             app.UseAuthorization();
