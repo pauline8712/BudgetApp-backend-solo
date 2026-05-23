@@ -2,9 +2,13 @@
 using BudgetApp.Application.Features.Users.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BudgetApp.API.Controllers;
 
+
+
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/users")]
 public class UsersController : ControllerBase
