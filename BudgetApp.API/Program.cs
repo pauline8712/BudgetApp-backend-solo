@@ -2,6 +2,7 @@ using BudgetApp.Application;
 using BudgetApp.Infrastructure;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -49,8 +50,19 @@ namespace BudgetApp.API
             });
 
             var app = builder.Build();
+
+
+            // Kör migrations automatiskt vid uppstart
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<BudgetApp.Infrastructure.Database.AppDbContext>();
+                await db.Database.MigrateAsync();
+            }
             // Kör data seeding vid uppstart — skapar Admin-användare om den inte finns
+
             await DbInitializer.SeedAsync(app.Services);
+
+
 
             // Global middleware f�r ValidationException fr�n FluentValidation
             app.Use(async (context, next) =>
