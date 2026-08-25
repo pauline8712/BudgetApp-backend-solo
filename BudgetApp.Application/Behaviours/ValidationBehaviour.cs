@@ -11,7 +11,7 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
     // Alla validators för TRequest injiceras via konstruktorn
-    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+     public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
     {
         _validators = validators;
     }
