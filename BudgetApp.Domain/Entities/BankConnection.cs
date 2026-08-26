@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 //A new database table that are looking att the connection between the user and their bank account for Tink.
 //Because of this class we can see what user has connected with what bank account
@@ -13,7 +9,7 @@ using System.Threading.Tasks;
 //Busniesslogic
 namespace BudgetApp.Domain.Entities
 {
-    internal class BankConnection
+    public class BankConnection
     {
     }
 }
