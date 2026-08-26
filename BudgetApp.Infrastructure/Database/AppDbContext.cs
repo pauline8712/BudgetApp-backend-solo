@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
     {
     }
 
+    //EF Core only creates tables for the classes that they are aware of via a DbSet. 
     public DbSet<User> Users { get; set; }
     public DbSet<Budget> Budgets { get; set; }
     public DbSet<Category> Categories { get; set; }
@@ -35,8 +36,13 @@ public class AppDbContext : DbContext
             .WithMany(c => c.Transactions)
             .HasForeignKey(t => t.CategoryId);
 
-        
-        
+        // User → BankConnection (1 till 1) — a user has at most one bankconnection
+        modelBuilder.Entity<BankConnection>()
+            .HasOne(bc => bc.User)
+            .WithOne()
+            .HasForeignKey<BankConnection>(bc => bc.UserId);
+
+
         // Decimal precision
         modelBuilder.Entity<Budget>()
             .Property(b => b.TotalAmount)
