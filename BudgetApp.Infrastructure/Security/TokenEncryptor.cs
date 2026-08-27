@@ -11,5 +11,10 @@ namespace BudgetApp.Infrastructure.Security
         {
             _protector = provider.CreateProtector("BudgetApp.TinkTokens");
         }
+
+        public string Encrypt(string plainText)
+        {
+            return _protector.Protect(plainText);
+        }
     }
 }
