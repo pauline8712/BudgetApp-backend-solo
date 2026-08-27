@@ -1,9 +1,12 @@
 using BudgetApp.Application;
 using BudgetApp.Infrastructure;
+using BudgetApp.Infrastructure.Database;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using System.Text;
 
 
@@ -20,6 +23,8 @@ namespace BudgetApp.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication();
+            builder.Services.AddDataProtection()
+    .PersistKeysToDbContext<AppDbContext>();
 
             var jwtSecret = builder.Configuration["Jwt:Secret"]!;
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
