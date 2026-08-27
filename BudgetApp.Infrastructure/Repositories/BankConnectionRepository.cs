@@ -11,4 +11,10 @@ public class BankConnectionRepository : BaseRepository<BankConnection>, IBankCon
     {
 
     }
+
+    public async Task<BankConnection?> GetByUserIdAsync(Guid userId)
+    {
+        return await _context.BankConnections
+        .FirstOrDefaultAsync(BCrypt => BCrypt.UserId == userId);
+    }
 }
