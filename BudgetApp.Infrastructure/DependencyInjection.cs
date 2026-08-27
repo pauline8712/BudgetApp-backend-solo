@@ -1,6 +1,7 @@
 ﻿using BudgetApp.Application.Interfaces;
 using BudgetApp.Infrastructure.Database;
 using BudgetApp.Infrastructure.Repositories;
+using BudgetApp.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<IBudgetRepository, BudgetRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IBankConnectionRepository, BankConnectionRepository>();
+        services.AddScoped<ITokenEncryptor, TokenEncryptor>();
 
         // Registrerar JwtTokenService — skapar JWT-tokens vid inloggning och registrering
         services.AddScoped<IJwtTokenService, JwtTokenService>();
