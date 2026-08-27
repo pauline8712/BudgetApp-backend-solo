@@ -16,5 +16,10 @@ namespace BudgetApp.Infrastructure.Security
         {
             return _protector.Protect(plainText);
         }
+
+        public string Decrypt(string cipherText)
+        {
+            return _protector.Unprotect(cipherText);
+        }
     }
 }
