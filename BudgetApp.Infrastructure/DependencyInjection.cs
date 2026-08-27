@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IBudgetRepository, BudgetRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<IBankConnectionRepository, BankConnectionRepository>();
 
         // Registrerar JwtTokenService — skapar JWT-tokens vid inloggning och registrering
         services.AddScoped<IJwtTokenService, JwtTokenService>();
