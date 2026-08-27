@@ -1,9 +1,12 @@
 ﻿using BudgetApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 
 namespace BudgetApp.Infrastructure.Database;
-
-public class AppDbContext : DbContext
+//IDataProtectionKeyContext är ett interface från paketet vi just installerade.
+//Det talar om för Data Protection-systemet: "den här DbContext-klassen kan användas för att lagra krypteringsnycklar".
+//Utan det vet inte biblioteket var den ska spara dem.
+public class AppDbContext : DbContext, IDataProtectionKeyContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -15,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<Category> Categories { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<BankConnection> BankConnections { get; set; }
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
