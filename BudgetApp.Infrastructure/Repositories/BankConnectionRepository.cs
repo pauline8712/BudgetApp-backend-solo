@@ -7,4 +7,8 @@ namespace BudgetApp.Infrastructure.Repositories;
 
 public class BankConnectionRepository : BaseRepository<BankConnection>, IBankConnectionRepository
 {
+    public BankConnectionRepository(AppDbContext context) : base(context)
+    {
+
+    }
 }
