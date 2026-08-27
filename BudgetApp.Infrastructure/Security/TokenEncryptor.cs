@@ -6,5 +6,10 @@ namespace BudgetApp.Infrastructure.Security
     public class TokenEncryptor : ITokenEncryptor
     {
         private readonly IDataProtector _protector;
+
+        public TokenEncryptor(IDataProtectionProvider provider)
+        {
+            _protector = provider.CreateProtector("BudgetApp.TinkTokens");
+        }
     }
 }
