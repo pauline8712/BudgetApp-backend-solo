@@ -2,10 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 //A temporary testcontroller file to see if the
 //TokenEncryptor is working
-namespace BudgetApp.API.Controllers
+namespace BudgetApp.API.Controllers;
 
+[ApiController]
+[Route("api/test")]
+
+public class TestController : ControllerBase
 {
-    public class TestController
+    private readonly ITokenEncryptor _encryptor;
+
+    public TestController (ITokenEncryptor encryptor)
     {
+        _encryptor = encryptor;
     }
 }
+
